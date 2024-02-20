@@ -1,0 +1,29 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "jsx": "react",
+    "moduleResolution": "node",
+    "baseUrl": ".",
+    "paths": {
+      "@mocks/*": ["./__mocks__/*"],
+      "@tests/*": ["./__tests__/*"],
+      "@temps/*": ["./__temps__/*"],
+      "@assets/*": ["./src/assets/*"],
+      "@components/*": ["./src/components/*"],
+      "@constants/*": ["./src/constants/*"],
+      "@navigation/*": ["src/navigation/*"],
+      "@recoil/*": ["./src/recoil/*"],
+      "@screens/*": ["./src/screens/*"],
+      "@shared/*": ["./src/shared/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@styles/*": ["./src/styles/*"],
+      "@themes/*": ["./src/themes/*"],
+      "@providers/*": ["./src/providers/*"],
+      "@graphql/*": ["./src/graphql/*"],
+      "@mobx/*": ["./src/mobx/*"],
+      "@context/*": ["./src/context/*"],
+      "@services/*": ["./src/services/*"]
+    },
+    "resolveJsonModule": true
+  }
+}
