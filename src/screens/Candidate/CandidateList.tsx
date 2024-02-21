@@ -1,5 +1,5 @@
 // screens/CandidateList.tsx
-import React from "react";
+import React, { useEffect } from "react";
 import {
   View,
   Text,
@@ -8,13 +8,30 @@ import {
   StyleSheet,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import Navigation from "../../navigation/Navigation";
 import { candidateListState } from "../../recoil";
+import { fetchCandidates } from "@services/api";
+import Container from "@components/Containers/Container";
+import FlashList from "@components/List/FlashList";
 
 const CandidateList: React.FC = () => {
-  const navigation = useNavigation();
-  const candidates = useRecoilValue(candidateListState);
+  // const candidates = useRecoilValue(candidateListState);
+  const [candidates, setCandidates] = useRecoilState(candidateListState);
+
+  // console.log("candidates", candidates);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await fetchCandidates();
+        setCandidates(res);
+      } catch (error) {
+        console.error("Error setting candidates list:", error);
+      }
+    };
+    fetchData();
+  }, []);
 
   const navigateToCandidateDetails = () => {
     Navigation.navigate("CandidateDetails");
@@ -27,14 +44,14 @@ const CandidateList: React.FC = () => {
   );
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Candidate List</Text>
-      <FlatList
+    <Container>
+      <FlashList
         data={candidates}
-        keyExtractor={(item) => item.id.toString()}
         renderItem={renderItem}
+        estimatedItemSize={200}
+        horizontal={false}
       />
-    </View>
+    </Container>
   );
 };
 

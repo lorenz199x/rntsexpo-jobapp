@@ -7,10 +7,13 @@ export default {
    * @returns {any}
    */
   generateRandomId: (length: number) => {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let result = '';
+    const characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let result = "";
     for (let i = 0; i < length; i++) {
-      result += characters.charAt(Math.floor(Math.random() * characters.length));
+      result += characters.charAt(
+        Math.floor(Math.random() * characters.length)
+      );
     }
     return result;
   },
@@ -24,25 +27,23 @@ export default {
    */
   formatDate: (date: Date) => {
     const options: Intl.DateTimeFormatOptions = {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric',
-      hour: 'numeric',
-      minute: 'numeric',
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "numeric",
+      minute: "numeric",
       hour12: true,
     };
-    return new Intl.DateTimeFormat('en-US', options).format(date); //ex: 02 Jun 2022 at 3:16 PM
+    return new Intl.DateTimeFormat("en-US", options).format(date); //ex: 02 Jun 2022 at 3:16 PM
+  },
+
+  getCurrentDate: () => {
+    const currentDate = new Date();
+    const formattedDate = currentDate.toISOString();
+    // console.log(formattedDate);
+    return formattedDate;
   },
 };
-// const generateRandomId = (length: number) => {
-//   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-//   let result = '';
-//   for (let i = 0; i < length; i++) {
-//     result += characters.charAt(Math.floor(Math.random() * characters.length));
-//   }
-//   return result;
-// };
-
 /**
  *
  * A function that will return a formatted price

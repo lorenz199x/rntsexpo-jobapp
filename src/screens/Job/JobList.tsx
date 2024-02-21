@@ -1,5 +1,5 @@
 // screens/JobList.tsx
-import React from "react";
+import React, { useEffect } from "react";
 import {
   View,
   Text,
@@ -8,16 +8,30 @@ import {
   StyleSheet,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { jobListState } from "../../recoil";
 import Navigation from "../../navigation/Navigation";
 import FlashList from "@components/List/FlashList";
 import Container from "@components/Containers/Container";
 import JobCard, { JobDetailsProps } from "./components/JobCard";
 import { Screen } from "@shared/enums/Screen";
+import { fetchJobs } from "@services/api";
 
 const JobList: React.FC = () => {
-  const jobs = useRecoilValue(jobListState);
+  // const jobs = useRecoilValue(jobListState);
+  const [jobs, setJobList] = useRecoilState(jobListState);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await fetchJobs();
+        setJobList(res);
+      } catch (error) {
+        console.error("Error setting joblist:", error);
+      }
+    };
+    fetchData();
+  }, []);
 
   return (
     <Container>

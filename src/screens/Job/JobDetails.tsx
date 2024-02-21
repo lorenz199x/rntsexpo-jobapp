@@ -1,7 +1,6 @@
 // screens/JobDetails.tsx
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { useRoute } from "@react-navigation/native";
 
 interface JobDetailsProps {
   route: any;
@@ -10,10 +9,6 @@ interface JobDetailsProps {
 
 const JobDetails = (props: JobDetailsProps) => {
   const { route } = props;
-  // const { job } = route.params || { job: { title: "" } };
-
-  console.log("Job", route.params?.item?.JobDetail);
-
   const item = route.params?.item;
 
   return (

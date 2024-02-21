@@ -40,14 +40,26 @@ const TabNavigator = () => {
   return (
     <Tab.Navigator
       // default configuration from React Navigation
+      // appearance={{
+      //   floating: false,
+      //   activeColors: "#000000",
+      //   activeTabBackgrounds: "#7986F9",
+      // }}
+      // tabBarOptions={{
+      // activeTintColor: "#2F7C6E",
+      // inactiveTintColor: "#222222",
+      // }}
+
       appearance={{
         floating: false,
-        activeColors: "#000000",
+        activeColors: "white",
         activeTabBackgrounds: "#7986F9",
+        // @ts-ignore
+        whenInactiveShow: "label-only",
       }}
       tabBarOptions={{
-        activeTintColor: "#2F7C6E",
-        inactiveTintColor: "#222222",
+        activeTintColor: "white",
+        inactiveTintColor: "black",
       }}
     >
       <Tab.Screen name={Screen.JOB} component={JobStack} />
@@ -95,7 +107,13 @@ const RootNavigator = (props: any) => {
         routeNameRef.current = currentRouteName;
       }}
     >
-      <RootStack.Navigator initialRouteName={Screen.AUTHENTICATION}>
+      <RootStack.Navigator
+        // initialRouteName={Screen.AUTHENTICATION}
+        screenOptions={{
+          animationEnabled: true,
+          headerShown: true,
+        }}
+      >
         <RootStack.Screen name={"Jobify"} component={TabNavigator} />
         <RootStack.Screen name={Screen.JOB_LIST} component={JobList} />
         <RootStack.Screen name={Screen.JOB_DETAILS} component={JobDetails} />
