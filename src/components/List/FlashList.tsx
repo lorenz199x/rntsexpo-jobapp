@@ -31,6 +31,7 @@ interface ListProps {
    * Sets the estimatedItemSize for FlashList
    */
   estimatedItemSize?: number;
+  listEmptyComponent?: any;
 }
 
 /**
@@ -39,7 +40,6 @@ interface ListProps {
  * @param props - ListProps
  * @type {Component}
  * @returns {React.FC}
- * @author Albert
  */
 const FlashList = ({
   title,
@@ -47,6 +47,7 @@ const FlashList = ({
   renderItem,
   horizontal = true,
   estimatedItemSize = 50,
+  listEmptyComponent,
 }: ListProps) => {
   // const { colorTheme } = useContext(ThemeContext);
 
@@ -65,6 +66,7 @@ const FlashList = ({
         estimatedItemSize={estimatedItemSize}
         horizontal={horizontal}
         showsHorizontalScrollIndicator={false}
+        ListEmptyComponent={listEmptyComponent}
       />
     </Container>
   );

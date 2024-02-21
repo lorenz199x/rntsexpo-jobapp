@@ -1,6 +1,5 @@
 /**
  * A function that will return boolean to set the app theme.
- * @author Lorenz
  * @module assets/images/index.ts
  * @param CustomComponent - A react functional/class component.
  * @param {boolean} img - A params from other component

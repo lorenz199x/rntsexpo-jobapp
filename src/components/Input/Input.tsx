@@ -80,7 +80,6 @@ interface InputProps extends TextInputProps {
  * A custom component for inputs.
  * It has a show password icon.
  *
- * @author {Harley}
  * @param props - InputProps & TextInputProps
  * @type {Component}
  * @returns {React.FC}

@@ -33,12 +33,23 @@ const CandidateList: React.FC = () => {
     fetchData();
   }, []);
 
-  const navigateToCandidateDetails = () => {
-    Navigation.navigate("CandidateDetails");
+  const navigateToCandidateDetails = (item) => {
+    Navigation.navigate("CandidateDetails", { item });
+  };
+
+  const listEmptyComponent = () => {
+    return (
+      <View style={styles.noRecordText}>
+        <Text>No records found!</Text>
+      </View>
+    );
   };
 
   const renderItem = ({ item }: { item: { id: number; name: string } }) => (
-    <TouchableOpacity style={styles.card} onPress={navigateToCandidateDetails}>
+    <TouchableOpacity
+      style={styles.card}
+      onPress={() => navigateToCandidateDetails(item)}
+    >
       <Text>{item.name}</Text>
     </TouchableOpacity>
   );
@@ -50,6 +61,7 @@ const CandidateList: React.FC = () => {
         renderItem={renderItem}
         estimatedItemSize={200}
         horizontal={false}
+        listEmptyComponent={listEmptyComponent}
       />
     </Container>
   );
@@ -70,6 +82,11 @@ const styles = StyleSheet.create({
     padding: 16,
     marginVertical: 8,
     borderRadius: 8,
+  },
+  noRecordText: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

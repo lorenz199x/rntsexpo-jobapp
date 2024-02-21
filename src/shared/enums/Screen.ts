@@ -1,7 +1,6 @@
 /**
  * Enum representing different screens in the application.
  *
- * @author {Micah}
  * @returns {Screens}
  */
 

@@ -8,14 +8,33 @@ import { Labels } from "@shared/enums";
 import { ButtonTitle } from "@shared/enums/buttonText";
 import { Colors, Shadows } from "@themes/index";
 import { verticalScale } from "@utils/sizes";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
-/**
- * The responsible for showing the registration form.
- *
- * @type {Component}
- * @returns {React.FC}
- */
+interface RegisterFormInput {
+  email: string;
+  fullName: string;
+  password: string;
+  confirmPassword: string;
+}
+
 const RegisterForm: React.FC = () => {
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<RegisterFormInput>({
+    defaultValues: {
+      email: "",
+      fullName: "",
+      password: "",
+      confirmPassword: "",
+    },
+  });
+
+  const onSubmit: SubmitHandler<RegisterFormInput> = (data) => {
+    // You can handle the submission logic here
+    console.log(data);
+  };
   return (
     <View style={styles.root}>
       <View style={styles.firstRow}>
@@ -42,32 +61,96 @@ const RegisterForm: React.FC = () => {
         </View>
       </View>
       <Fragment>
-        <Input
-          testID="input"
-          placeholder={Labels.FULL_NAME}
-          style={styles.usernameInput}
+        <Controller
+          control={control}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <Input
+              testID="input"
+              placeholder="Full Name"
+              value={value}
+              onChange={onChange}
+              onBlur={onBlur}
+              style={styles.usernameInput}
+              showIcon={false}
+            />
+          )}
+          name="fullName"
+          rules={{ required: "Full Name is required" }}
         />
-        <Input
-          testID="input"
-          placeholder={Labels.MOBILE}
-          style={styles.usernameInput}
+        {errors.fullName && (
+          <Text style={styles.error}>{errors.fullName.message}</Text>
+        )}
+
+        <Controller
+          control={control}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <Input
+              testID="input"
+              placeholder="Email"
+              value={value}
+              onChange={onChange}
+              onBlur={onBlur}
+              style={styles.usernameInput}
+              showIcon={false}
+            />
+          )}
+          name="email"
+          rules={{ required: "Username is required" }}
         />
-        <Input
-          testID="input"
-          placeholder={Labels.PASSWORD}
-          style={styles.usernameInput}
+        {errors.email && (
+          <Text style={styles.error}>{errors.email.message}</Text>
+        )}
+
+        <Controller
+          control={control}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <Input
+              testID="input"
+              placeholder="Password"
+              value={value}
+              onChange={onChange}
+              onBlur={onBlur}
+              style={styles.usernameInput}
+              showIcon={false}
+              showPasswordIcon={true}
+              secureTextEntry={true}
+            />
+          )}
+          name="password"
+          rules={{ required: "Password is required" }}
         />
-        <Input
-          testID="input"
-          placeholder={Labels.CONFIRM_PASSWORD}
-          style={styles.usernameInput}
+        {errors.password && (
+          <Text style={styles.error}>{errors.password.message}</Text>
+        )}
+
+        <Controller
+          control={control}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <Input
+              testID="input"
+              placeholder="Confirm Password"
+              value={value}
+              onChange={onChange}
+              onBlur={onBlur}
+              style={styles.usernameInput}
+              showIcon={false}
+              showPasswordIcon={true}
+              secureTextEntry={true}
+            />
+          )}
+          name="confirmPassword"
+          rules={{ required: "Confirm Password is required" }}
         />
+        {errors.confirmPassword && (
+          <Text style={styles.error}>{errors.confirmPassword.message}</Text>
+        )}
       </Fragment>
       <View style={styles.secondRow}>
         <ButtonText
           buttonText={ButtonTitle.SIGN_UP}
           customButtonStyle={styles.signupButton}
           customTextStyle={styles.signupText}
+          onPress={handleSubmit(onSubmit)}
         />
         <View style={styles.loginContainer}>
           <View>
@@ -150,5 +233,9 @@ const styles = StyleSheet.create({
   loginContainer: {
     marginLeft: 30,
     justifyContent: "center",
+  },
+  error: {
+    color: "red",
+    marginBottom: 10,
   },
 });

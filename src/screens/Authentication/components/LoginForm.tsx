@@ -9,49 +9,79 @@ import { ButtonTitle } from "@shared/enums/buttonText";
 import { Colors } from "@themes/index";
 import { verticalScale } from "@utils/sizes";
 import images from "@assets/images";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import Navigation from "@navigation/Navigation";
+import { Screen } from "@shared/enums/Screen";
 
-/**
- * A form dedicated for login.
- *
- * @author Harley
- * @type {Component}
- * @returns {React.FC}
- */
+interface LoginFormInput {
+  username: string;
+  password: string;
+}
+
 const LoginForm = () => {
-  const [state, setState] = useState<{ username: string; password: string }>({
-    username: "",
-    password: "",
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormInput>({
+    defaultValues: {
+      username: "",
+      password: "",
+    },
   });
 
-  const onChangeText = (value: string, stateName: string) => {
-    setState((prev) => ({
-      ...prev,
-      [stateName]: value,
-    }));
-  };
-
-  const onPressLogin = () => {
-    // Navigation.navigate(Screen.PIN_SCREEN);
+  const onSubmit: SubmitHandler<LoginFormInput> = (data) => {
+    // You can handle the submission logic here
+    console.log(data);
+    Navigation.navigate(Screen.JOB_LIST);
   };
 
   return (
     <View style={styles.root}>
-      <Input
-        testID="input"
-        placeholder={Labels.USERNAME}
-        value={state.username}
-        style={styles.inputs}
-        onChangeText={(e) => onChangeText(e, "username")}
+      <Controller
+        control={control}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <Input
+            testID="input"
+            placeholder="Username"
+            value={value}
+            onChange={onChange}
+            onBlur={onBlur}
+            style={styles.inputs}
+            showIcon={false}
+          />
+        )}
+        name="username"
+        rules={{ required: "Username is required" }}
       />
-      <Input
-        testID="input"
-        secureTextEntry
-        value={state.password}
-        placeholder={Labels.PASSWORD}
-        style={[styles.inputs, styles.passwordInptu]}
-        showPasswordIcon
-        onChangeText={(e) => onChangeText(e, "password")}
+      {errors.username && (
+        <Text style={styles.error} size={"m"}>
+          {errors.username.message}
+        </Text>
+      )}
+      <Controller
+        control={control}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <Input
+            testID="input"
+            placeholder="Password"
+            value={value}
+            onChange={onChange}
+            onBlur={onBlur}
+            style={styles.inputs}
+            showIcon={false}
+            showPasswordIcon={true}
+            secureTextEntry={true}
+          />
+        )}
+        name="password"
+        rules={{ required: "Password is required" }}
       />
+      {errors.password && (
+        <Text style={styles.error} size={"m"}>
+          {errors.password.message}
+        </Text>
+      )}
       <ButtonText
         textOnly
         buttonText={ButtonTitle.FORGOT_PASSWORD}
@@ -61,7 +91,7 @@ const LoginForm = () => {
       <ButtonText
         customButtonStyle={styles.loginButton}
         buttonText={ButtonTitle.LOGIN}
-        onPress={onPressLogin}
+        onPress={handleSubmit(onSubmit)}
       />
       <Text size="s" style={styles.orText}>
         {Labels.OR}
@@ -128,5 +158,9 @@ const styles = StyleSheet.create({
   },
   googleText: {
     color: Colors.black,
+  },
+  error: {
+    color: "red",
+    marginBottom: 10,
   },
 });
