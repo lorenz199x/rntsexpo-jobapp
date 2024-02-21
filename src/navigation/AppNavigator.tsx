@@ -111,10 +111,13 @@ const RootNavigator = (props: any) => {
         initialRouteName={Screen.AUTHENTICATION}
         screenOptions={{
           animationEnabled: true,
-          headerShown: true,
+          headerShown: false,
         }}
       >
-        <RootStack.Screen name={"Jobify"} component={TabNavigator} />
+        <RootStack.Screen
+          name={Screen.TAB_NAVIGATOR} //temp default 'Jobify'
+          component={TabNavigator}
+        />
         <RootStack.Screen name={Screen.JOB_LIST} component={JobList} />
         <RootStack.Screen name={Screen.JOB_DETAILS} component={JobDetails} />
         <RootStack.Screen name={Screen.POST_NEW_JOB} component={PostNewJob} />

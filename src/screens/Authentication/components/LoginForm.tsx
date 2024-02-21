@@ -33,7 +33,7 @@ const LoginForm = () => {
   const onSubmit: SubmitHandler<LoginFormInput> = (data) => {
     // You can handle the submission logic here
     console.log(data);
-    Navigation.navigate(Screen.JOB_LIST);
+    Navigation.navigate(Screen.TAB_NAVIGATOR);
   };
 
   return (

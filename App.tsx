@@ -1,11 +1,11 @@
-import { StatusBar } from "expo-status-bar";
+import React from "react";
 import { RecoilRoot } from "recoil";
-import AppNavigator from "./src/navigation/AppNavigator";
+import Entry from "./src/Entry";
 
 export default function App() {
   return (
     <RecoilRoot>
-      <AppNavigator />
+      <Entry />
     </RecoilRoot>
   );
 }

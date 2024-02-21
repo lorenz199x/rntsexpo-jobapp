@@ -4,6 +4,7 @@
     "jsx": "react",
     "moduleResolution": "node",
     "baseUrl": ".",
+    "esModuleInterop": true,
     "paths": {
       "@mocks/*": ["./__mocks__/*"],
       "@tests/*": ["./__tests__/*"],
