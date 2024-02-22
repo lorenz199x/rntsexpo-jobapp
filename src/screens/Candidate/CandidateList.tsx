@@ -1,25 +1,34 @@
 // screens/CandidateList.tsx
 import React, { useEffect } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  FlatList,
-  StyleSheet,
-} from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { useRecoilState, useRecoilValue } from "recoil";
+import { useAuth, useUser, SignedIn, SignedOut } from "@clerk/clerk-expo";
+//utils
 import Navigation from "../../navigation/Navigation";
 import { candidateListState } from "../../recoil";
+import { Screen } from "@shared/enums/Screen";
 import { fetchCandidates } from "@services/api";
+import { Labels } from "@shared/enums";
+//componenets
 import Container from "@components/Containers/Container";
 import FlashList from "@components/List/FlashList";
+import Header from "@components/Header/Header";
 
 const CandidateList: React.FC = () => {
   // const candidates = useRecoilValue(candidateListState);
+  const { user } = useUser();
+  const { isLoaded, signOut, isSignedIn } = useAuth();
   const [candidates, setCandidates] = useRecoilState(candidateListState);
+  const userEmail = user?.emailAddresses[0].emailAddress;
+  const notSignedIn = isSignedIn ? "Signed in" : "Signed out";
 
-  // console.log("candidates", candidates);
+  useEffect(() => {
+    if (!isSignedIn) {
+      signOut();
+      Navigation.navigate(Screen.AUTHENTICATION);
+      console.log("logout from candidatelist useeffect");
+    }
+  }, [isSignedIn]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,7 +49,7 @@ const CandidateList: React.FC = () => {
   const listEmptyComponent = () => {
     return (
       <View style={styles.noRecordText}>
-        <Text>No records found!</Text>
+        <Text>{Labels.NO_RECORDS_FOUND}</Text>
       </View>
     );
   };
@@ -54,8 +63,21 @@ const CandidateList: React.FC = () => {
     </TouchableOpacity>
   );
 
+  const handleLogout = () => {
+    if (!isLoaded) {
+      return null;
+    }
+    signOut();
+    Navigation.navigate(Screen.AUTHENTICATION);
+    console.log("logout from candidatelist");
+  };
+
   return (
     <Container>
+      <Header
+        title={`Hi ${userEmail}, You are ${notSignedIn}`}
+        onButtonPress={handleLogout}
+      />
       <FlashList
         data={candidates}
         renderItem={renderItem}

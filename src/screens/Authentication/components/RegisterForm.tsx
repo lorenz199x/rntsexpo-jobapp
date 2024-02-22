@@ -1,5 +1,13 @@
-import React, { Fragment } from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
+import React, { Fragment, useEffect, useState } from "react";
+import {
+  Image,
+  Platform,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import images from "@assets/images";
 import ButtonIcon from "@components/Button/ButtonIcon";
 import ButtonText from "@components/Button/ButtonText";
@@ -9,15 +17,26 @@ import { ButtonTitle } from "@shared/enums/buttonText";
 import { Colors, Shadows } from "@themes/index";
 import { verticalScale } from "@utils/sizes";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { ClerkProvider, SignedIn, SignedOut } from "@clerk/clerk-expo";
+import { useSignUp, useAuth } from "@clerk/clerk-expo";
+import Toast from "react-native-toast-message";
+import { toastConfig, ToastMessage } from "@components/Toast/Toast";
+import Navigation from "@navigation/Navigation";
+import { Screen } from "@shared/enums/Screen";
 
 interface RegisterFormInput {
   email: string;
   fullName: string;
   password: string;
-  confirmPassword: string;
+  // confirmPassword: string;
 }
 
 const RegisterForm: React.FC = () => {
+  const { isSignedIn } = useAuth();
+  const { isLoaded, signUp, setActive } = useSignUp();
+  const [pendingVerification, setPendingVerification] = useState(false);
+  const [code, setCode] = useState("");
+
   const {
     control,
     handleSubmit,
@@ -27,14 +46,75 @@ const RegisterForm: React.FC = () => {
       email: "",
       fullName: "",
       password: "",
-      confirmPassword: "",
+      // confirmPassword: "",
     },
   });
 
-  const onSubmit: SubmitHandler<RegisterFormInput> = (data) => {
+  useEffect(() => {
+    if (isSignedIn) {
+      Navigation.navigate(Screen.TAB_NAVIGATOR);
+    }
+  }, [isSignedIn]);
+
+  const onSubmit: SubmitHandler<RegisterFormInput> = async (data) => {
     // You can handle the submission logic here
     console.log(data);
+    if (!isLoaded) {
+      return;
+    }
+    try {
+      console.log("pasok");
+
+      const test1 = await signUp.create({
+        emailAddress: data.email,
+        firstName: data.fullName,
+        password: data.password,
+      });
+      console.log("pasok1", test1);
+
+      // send the email.
+      const test2 = await signUp.prepareEmailAddressVerification({
+        strategy: "email_code",
+      });
+      // console.log("test2", test2);
+
+      // change the UI to our pending section.
+      setPendingVerification(true);
+    } catch (err: any) {
+      console.log("ERROR:", JSON.stringify(err, null, 2));
+      const errorObject = JSON.parse(JSON.stringify(err, null, 2));
+
+      Platform.OS === "ios"
+        ? alert(err.errors[0].message)
+        : ToastMessage.show({
+            type: "error",
+            message: errorObject.errors[0].message,
+            subMessage: "",
+          });
+    }
   };
+
+  // This verifies the user using email code that is delivered.
+  const onPressVerify = async () => {
+    if (!isLoaded) {
+      return;
+    }
+    try {
+      const completeSignUp = await signUp.attemptEmailAddressVerification({
+        code,
+      });
+      await setActive({ session: completeSignUp.createdSessionId });
+    } catch (err: any) {
+      console.log(JSON.stringify(err, null, 2));
+      const errorObject = JSON.parse(JSON.stringify(err, null, 2));
+      ToastMessage.show({
+        type: "error",
+        message: ` ${errorObject.errors[0].message}`,
+        subMessage: "",
+      });
+    }
+  };
+
   return (
     <View style={styles.root}>
       <View style={styles.firstRow}>
@@ -123,7 +203,7 @@ const RegisterForm: React.FC = () => {
           <Text style={styles.error}>{errors.password.message}</Text>
         )}
 
-        <Controller
+        {/* <Controller
           control={control}
           render={({ field: { onChange, onBlur, value } }) => (
             <Input
@@ -143,7 +223,7 @@ const RegisterForm: React.FC = () => {
         />
         {errors.confirmPassword && (
           <Text style={styles.error}>{errors.confirmPassword.message}</Text>
-        )}
+        )} */}
       </Fragment>
       <View style={styles.secondRow}>
         <ButtonText
@@ -163,6 +243,33 @@ const RegisterForm: React.FC = () => {
           </View>
         </View>
       </View>
+
+      {pendingVerification && (
+        <View
+          style={{ flex: 0.5, justifyContent: "center", alignItems: "center" }}
+        >
+          <View>
+            <TextInput
+              value={code}
+              placeholder="Code..."
+              onChangeText={(code) => setCode(code)}
+            />
+          </View>
+          <TouchableOpacity onPress={onPressVerify}>
+            <Text style={{ fontSize: 15, fontWeight: "bold", color: "blue" }}>
+              Verify Email
+            </Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
+      <SignedIn>
+        <Text style={styles.error}>You are Signed in</Text>
+      </SignedIn>
+      <SignedOut>
+        <Text style={styles.error}>You are Signed out</Text>
+      </SignedOut>
+      <Toast config={toastConfig} position="bottom" bottomOffset={20} />
     </View>
   );
 };

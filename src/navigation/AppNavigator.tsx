@@ -1,8 +1,8 @@
+import React, { useRef } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import { AnimatedTabBarNavigator } from "react-native-animated-nav-tab-bar";
-
-import React, { useRef } from "react";
+import Navigation, { navigationRef } from "./Navigation";
 import JobList from "../screens/Job/JobList";
 import JobDetails from "../screens/Job/JobDetails";
 import CandidateList from "../screens/Candidate/CandidateList";
@@ -10,7 +10,6 @@ import CandidateDetails from "../screens/Candidate/CandidateDetails";
 import PostNewJob from "../screens/Job/NewJob/PostNewJob";
 import Authentication from "@screens/Authentication/Authentication";
 import { Screen } from "@shared/enums/Screen";
-import Navigation, { navigationRef } from "./Navigation";
 
 /**
  * RootNavigator is the main component defines the whole navigation of the application.
@@ -39,17 +38,6 @@ const CandidateStack = () => (
 const TabNavigator = () => {
   return (
     <Tab.Navigator
-      // default configuration from React Navigation
-      // appearance={{
-      //   floating: false,
-      //   activeColors: "#000000",
-      //   activeTabBackgrounds: "#7986F9",
-      // }}
-      // tabBarOptions={{
-      // activeTintColor: "#2F7C6E",
-      // inactiveTintColor: "#222222",
-      // }}
-
       appearance={{
         floating: false,
         activeColors: "white",
@@ -108,7 +96,7 @@ const RootNavigator = (props: any) => {
       }}
     >
       <RootStack.Navigator
-        initialRouteName={Screen.AUTHENTICATION}
+        initialRouteName={Screen.TAB_NAVIGATOR}
         screenOptions={{
           animationEnabled: true,
           headerShown: false,

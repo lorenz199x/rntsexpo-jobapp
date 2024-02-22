@@ -1,14 +1,46 @@
 // screens/PostNewJob.tsx
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React, { useEffect } from "react";
+import { StyleSheet } from "react-native";
+import { useAuth, useUser, SignedIn, SignedOut } from "@clerk/clerk-expo";
+//utils
+import Navigation from "@navigation/Navigation";
 import NewJobForm from "./NewJobForm";
+import { Screen } from "@shared/enums/Screen";
+//components
+import Container from "@components/Containers/Container";
+import Header from "@components/Header/Header";
 
 const PostNewJob: React.FC = () => {
+  const { user } = useUser();
+  const { isLoaded, signOut, isSignedIn } = useAuth();
+  const userEmail = user?.emailAddresses[0].emailAddress;
+  const notSignedIn = isSignedIn ? "Signed in" : "Signed out";
+
+  useEffect(() => {
+    if (!isSignedIn) {
+      signOut();
+      Navigation.navigate(Screen.AUTHENTICATION);
+      console.log("logout from joblist useeffect");
+    }
+  }, [isSignedIn]);
+
+  const handleLogout = () => {
+    if (!isLoaded) {
+      return null;
+    }
+    signOut();
+    Navigation.navigate(Screen.AUTHENTICATION);
+    console.log("logout from postnewjob");
+  };
+
   return (
-    <View style={styles.container}>
-      {/* <Text style={styles.title}>Post New Job</Text> */}
+    <Container style={styles.container}>
+      <Header
+        title={`Hi ${userEmail}, You are ${notSignedIn}`}
+        onButtonPress={handleLogout}
+      />
       <NewJobForm />
-    </View>
+    </Container>
   );
 };
 

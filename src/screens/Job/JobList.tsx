@@ -1,25 +1,34 @@
-// screens/JobList.tsx
 import React, { useEffect } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  FlatList,
-  StyleSheet,
-} from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { View, Text, StyleSheet } from "react-native";
 import { useRecoilState, useRecoilValue } from "recoil";
+import { useAuth, useUser, SignedIn, SignedOut } from "@clerk/clerk-expo";
+//utils
+import Navigation from "@navigation/Navigation";
 import { jobListState } from "../../recoil";
-import Navigation from "../../navigation/Navigation";
-import FlashList from "@components/List/FlashList";
-import Container from "@components/Containers/Container";
-import JobCard, { JobDetailsProps } from "./components/JobCard";
 import { Screen } from "@shared/enums/Screen";
 import { fetchJobs } from "@services/api";
+import { Labels } from "@shared/enums";
+//componenets
+import FlashList from "@components/List/FlashList";
+import Container from "@components/Containers/Container";
+import Header from "@components/Header/Header";
+import JobCard, { JobDetailsProps } from "./components/JobCard";
 
 const JobList: React.FC = () => {
   // const jobs = useRecoilValue(jobListState);
+  const { user } = useUser();
+  const { isLoaded, signOut, isSignedIn } = useAuth();
   const [jobs, setJobList] = useRecoilState(jobListState);
+  const userEmail = user?.emailAddresses[0].emailAddress;
+  const notSignedIn = isSignedIn ? "Signed in" : "Signed out";
+
+  useEffect(() => {
+    if (!isSignedIn) {
+      signOut();
+      Navigation.navigate(Screen.AUTHENTICATION);
+      console.log("logout from joblist useeffect");
+    }
+  }, [isSignedIn]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -36,13 +45,34 @@ const JobList: React.FC = () => {
   const listEmptyComponent = () => {
     return (
       <View style={styles.noRecordText}>
-        <Text>No records found!</Text>
+        <Text>{Labels.NO_RECORDS_FOUND}</Text>
       </View>
     );
   };
 
+  const handleLogout = () => {
+    if (!isLoaded) {
+      return null;
+    }
+    signOut();
+    Navigation.navigate(Screen.AUTHENTICATION);
+    console.log("logout from joblist");
+  };
+
   return (
     <Container>
+      <Header
+        title={`Hi ${userEmail}, You are ${notSignedIn}`}
+        onButtonPress={handleLogout}
+      />
+
+      <SignedIn>
+        <Text>You are Signed in</Text>
+      </SignedIn>
+      <SignedOut>
+        <Text>You are Signed out</Text>
+      </SignedOut>
+
       <FlashList
         data={jobs}
         renderItem={({ item }: JobDetailsProps) => (
