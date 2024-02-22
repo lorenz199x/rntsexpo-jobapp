@@ -1,8 +1,11 @@
+import { Platform } from "react-native";
 import { PostNewJobInput } from "@screens/Job/NewJob/NewJobForm";
 import axios from "axios";
 
-const baseURL = "http://localhost:3000/trpc/";
 // const baseURL = 'https://jsonplaceholder.typicode.com';
+// const baseURL = "http://10.0.2.2:3000/trpc/"; //ANDROID: 10.0.2.2 IOS: localhost
+const url = Platform.OS === "ios" ? "localhost" : "10.0.2.2";
+const baseURL = `http://${url}:3000/trpc/`;
 const api = axios.create({
   baseURL,
 });

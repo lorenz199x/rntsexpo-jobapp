@@ -1,5 +1,11 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Platform,
+} from "react-native";
 
 interface HeaderProps {
   title: string;
@@ -25,6 +31,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 5,
     backgroundColor: "#7986F9",
+    marginTop: Platform.OS === "android" ? 50 : 0,
   },
   title: {
     color: "white",

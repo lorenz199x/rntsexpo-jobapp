@@ -26,25 +26,8 @@ const tokenCache = {
   },
 };
 
-const SignOut = () => {
-  const { isLoaded, signOut } = useAuth();
-  if (!isLoaded) {
-    return null;
-  }
-  return (
-    <View>
-      <Button
-        title="Sign Out"
-        onPress={() => {
-          signOut();
-        }}
-      />
-    </View>
-  );
-};
-
 const Entry = () => {
-  console.log(process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY);
+  // console.log(process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY);
   return (
     <ClerkProvider
       publishableKey={CLERK_PUBLISHABLE_KEY}

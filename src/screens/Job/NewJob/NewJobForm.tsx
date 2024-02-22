@@ -9,6 +9,7 @@ import { fetchJobs, postNewJob } from "@services/api";
 import Utils from "@utils/index";
 import { useRecoilValue } from "recoil";
 import { jobListState } from "@recoil/index";
+import ScrollableContainer from "@components/Containers/ScrollableContainer";
 export interface PostNewJobInput {
   title: string;
   description: string;
@@ -54,149 +55,153 @@ const NewJobForm: React.FC = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Post New Job</Text>
+    <ScrollableContainer showsVerticalScrollIndicator={false}>
+      <View style={styles.container}>
+        <Text style={styles.title}>Post New Job</Text>
 
-      <Controller
-        control={control}
-        render={({ field: { onChange, onBlur, value } }) => (
-          <Input
-            testID="input"
-            placeholder="Title"
-            value={value}
-            onChange={onChange}
-            onBlur={onBlur}
-            style={styles.inputs}
-            showIcon={false}
-          />
+        <Controller
+          control={control}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <Input
+              testID="input"
+              placeholder="Title"
+              value={value}
+              onChange={onChange}
+              onBlur={onBlur}
+              style={styles.inputs}
+              showIcon={false}
+            />
+          )}
+          name="title"
+          rules={{ required: "Title is required" }}
+        />
+        {errors.title && (
+          <Text style={styles.error}>{errors.title.message}</Text>
         )}
-        name="title"
-        rules={{ required: "Title is required" }}
-      />
-      {errors.title && <Text style={styles.error}>{errors.title.message}</Text>}
 
-      <Controller
-        control={control}
-        render={({ field: { onChange, onBlur, value } }) => (
-          <Input
-            testID="input"
-            placeholder="Description"
-            value={value}
-            onChange={onChange}
-            onBlur={onBlur}
-            style={styles.inputs}
-            showIcon={false}
-          />
+        <Controller
+          control={control}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <Input
+              testID="input"
+              placeholder="Description"
+              value={value}
+              onChange={onChange}
+              onBlur={onBlur}
+              style={styles.inputs}
+              showIcon={false}
+            />
+          )}
+          name="description"
+          rules={{ required: "Description is required" }}
+        />
+        {errors.description && (
+          <Text style={styles.error}>{errors.description.message}</Text>
         )}
-        name="description"
-        rules={{ required: "Description is required" }}
-      />
-      {errors.description && (
-        <Text style={styles.error}>{errors.description.message}</Text>
-      )}
 
-      <Controller
-        control={control}
-        render={({ field: { onChange, onBlur, value } }) => (
-          <Input
-            testID="input"
-            placeholder="Company"
-            value={value}
-            onChange={onChange}
-            onBlur={onBlur}
-            style={styles.inputs}
-            showIcon={false}
-          />
+        <Controller
+          control={control}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <Input
+              testID="input"
+              placeholder="Company"
+              value={value}
+              onChange={onChange}
+              onBlur={onBlur}
+              style={styles.inputs}
+              showIcon={false}
+            />
+          )}
+          name="company"
+          rules={{ required: "Company is required" }}
+        />
+        {errors.company && (
+          <Text style={styles.error}>{errors.company.message}</Text>
         )}
-        name="company"
-        rules={{ required: "Company is required" }}
-      />
-      {errors.company && (
-        <Text style={styles.error}>{errors.company.message}</Text>
-      )}
 
-      <Controller
-        control={control}
-        render={({ field: { onChange, onBlur, value } }) => (
-          <Input
-            testID="input"
-            placeholder="Location"
-            value={value}
-            onChange={onChange}
-            onBlur={onBlur}
-            style={styles.inputs}
-            showIcon={false}
-          />
+        <Controller
+          control={control}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <Input
+              testID="input"
+              placeholder="Location"
+              value={value}
+              onChange={onChange}
+              onBlur={onBlur}
+              style={styles.inputs}
+              showIcon={false}
+            />
+          )}
+          name="location"
+          rules={{ required: "Location is required" }}
+        />
+        {errors.location && (
+          <Text style={styles.error}>{errors.location.message}</Text>
         )}
-        name="location"
-        rules={{ required: "Location is required" }}
-      />
-      {errors.location && (
-        <Text style={styles.error}>{errors.location.message}</Text>
-      )}
 
-      <Controller
-        control={control}
-        render={({ field: { onChange, onBlur, value } }) => (
-          <Input
-            testID="input"
-            placeholder="Requirements"
-            value={value}
-            onChange={onChange}
-            onBlur={onBlur}
-            style={styles.inputs}
-            showIcon={false}
-          />
+        <Controller
+          control={control}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <Input
+              testID="input"
+              placeholder="Requirements"
+              value={value}
+              onChange={onChange}
+              onBlur={onBlur}
+              style={styles.inputs}
+              showIcon={false}
+            />
+          )}
+          name="requirements"
+          rules={{ required: "Requirements are required" }}
+        />
+        {errors.requirements && (
+          <Text style={styles.error}>{errors.requirements.message}</Text>
         )}
-        name="requirements"
-        rules={{ required: "Requirements are required" }}
-      />
-      {errors.requirements && (
-        <Text style={styles.error}>{errors.requirements.message}</Text>
-      )}
 
-      <Controller
-        control={control}
-        render={({ field: { onChange, onBlur, value } }) => (
-          <Input
-            testID="input"
-            placeholder="Skills"
-            value={value}
-            onChange={onChange}
-            onBlur={onBlur}
-            style={styles.inputs}
-            showIcon={false}
-          />
+        <Controller
+          control={control}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <Input
+              testID="input"
+              placeholder="Skills"
+              value={value}
+              onChange={onChange}
+              onBlur={onBlur}
+              style={styles.inputs}
+              showIcon={false}
+            />
+          )}
+          name="skills"
+          rules={{ required: "Skills are required" }}
+        />
+        {errors.skills && (
+          <Text style={styles.error}>{errors.skills.message}</Text>
         )}
-        name="skills"
-        rules={{ required: "Skills are required" }}
-      />
-      {errors.skills && (
-        <Text style={styles.error}>{errors.skills.message}</Text>
-      )}
 
-      <Controller
-        control={control}
-        render={({ field: { onChange, onBlur, value } }) => (
-          <Input
-            testID="input"
-            placeholder="Salary Range"
-            value={value}
-            onChange={onChange}
-            onBlur={onBlur}
-            style={styles.inputs}
-            showIcon={false}
-          />
+        <Controller
+          control={control}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <Input
+              testID="input"
+              placeholder="Salary Range"
+              value={value}
+              onChange={onChange}
+              onBlur={onBlur}
+              style={styles.inputs}
+              showIcon={false}
+            />
+          )}
+          name="salaryRange"
+          rules={{ required: "Salary Range is required" }}
+        />
+        {errors.salaryRange && (
+          <Text style={styles.error}>{errors.salaryRange.message}</Text>
         )}
-        name="salaryRange"
-        rules={{ required: "Salary Range is required" }}
-      />
-      {errors.salaryRange && (
-        <Text style={styles.error}>{errors.salaryRange.message}</Text>
-      )}
 
-      <ButtonText buttonText="Submit" onPress={handleSubmit(onSubmit)} />
-    </View>
+        <ButtonText buttonText="Submit" onPress={handleSubmit(onSubmit)} />
+      </View>
+    </ScrollableContainer>
   );
 };
 
