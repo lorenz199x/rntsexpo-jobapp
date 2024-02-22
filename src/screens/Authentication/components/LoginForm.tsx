@@ -29,6 +29,7 @@ const LoginForm = () => {
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<LoginFormInput>({
     defaultValues: {
@@ -40,6 +41,8 @@ const LoginForm = () => {
   useEffect(() => {
     if (isSignedIn) {
       Navigation.navigate(Screen.TAB_NAVIGATOR);
+    } else {
+      reset();
     }
   }, [isSignedIn]);
 

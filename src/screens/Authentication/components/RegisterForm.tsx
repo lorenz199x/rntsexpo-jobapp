@@ -63,6 +63,8 @@ const RegisterForm: React.FC = () => {
   useEffect(() => {
     if (isSignedIn) {
       Navigation.navigate(Screen.TAB_NAVIGATOR);
+    } else {
+      reset();
     }
   }, [isSignedIn]);
 
@@ -293,11 +295,6 @@ const RegisterForm: React.FC = () => {
               onChangeText={(code) => setCode(code)}
             />
           </View>
-          <TouchableOpacity onPress={onPressVerify}>
-            <Text style={{ fontSize: 15, fontWeight: "bold", color: "blue" }}>
-              Verify Email
-            </Text>
-          </TouchableOpacity>
         </>
       )}
 

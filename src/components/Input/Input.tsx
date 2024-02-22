@@ -137,7 +137,7 @@ const Input: FC<InputProps> = (props) => {
       <TextInput
         {...props}
         onChangeText={onChange}
-        secureTextEntry={secureTextEntry && showPassword}
+        secureTextEntry={secureTextEntry && !showPassword}
         style={[styles.input, customInputStyle]}
         editable={editable}
       />
