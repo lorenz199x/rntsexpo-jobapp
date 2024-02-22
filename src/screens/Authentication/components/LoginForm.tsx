@@ -63,7 +63,6 @@ const LoginForm = () => {
       await setActive({ session: completeSignIn.createdSessionId });
     } catch (err: any) {
       console.log(err);
-
       Platform.OS === "ios"
         ? alert(err.errors[0].message)
         : ToastMessage.show({
@@ -80,21 +79,8 @@ const LoginForm = () => {
       return null;
     }
     return (
-      // <View>
-      //   <Button
-      //     title="Sign Out"
-      //     onPress={() => {
-      //       signOut();
-      //     }}
-      //   />
-      // </View>
-
       <ButtonIcon
         buttonText={ButtonTitle.LOGOUT}
-        // iconMargin={20}
-        // customIconComponent={
-        //   <Image style={styles.googleLogo} source={images.googleLogo} />
-        // }
         iconName=""
         customTextStyle={styles.googleText}
         customButtonStyle={styles.googleButton}
@@ -149,19 +135,19 @@ const LoginForm = () => {
           {errors.password.message}
         </Text>
       )}
-      <ButtonText
+      {/* <ButtonText
         textOnly
         buttonText={ButtonTitle.FORGOT_PASSWORD}
         customButtonStyle={styles.forgotPasswordButton}
         customTextStyle={styles.forgotPasswordButtonText}
-      />
+      /> */}
       <ButtonText
         customButtonStyle={styles.loginButton}
         buttonText={ButtonTitle.LOGIN}
         onPress={handleSubmit(onSubmit)}
       />
 
-      <SignOut />
+      {/* <SignOut />  */}
       {/* <Text size="s" style={styles.orText}>
         {Labels.OR}
       </Text> */}
@@ -181,7 +167,7 @@ const LoginForm = () => {
         customTextStyle={styles.googleText}
         customButtonStyle={styles.googleButton}
       /> */}
-      <SignedIn>
+      {/* <SignedIn>
         <Text style={styles.error} size={"m"}>
           You are Signed in
         </Text>
@@ -190,7 +176,7 @@ const LoginForm = () => {
         <Text style={styles.error} size={"m"}>
           You are Signed out
         </Text>
-      </SignedOut>
+      </SignedOut> */}
 
       <Toast config={toastConfig} position="bottom" bottomOffset={20} />
     </View>

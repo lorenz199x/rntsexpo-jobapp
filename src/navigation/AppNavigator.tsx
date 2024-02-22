@@ -19,15 +19,31 @@ const Tab = AnimatedTabBarNavigator();
 
 const JobStack = () => (
   <Stack.Navigator>
-    <Stack.Screen name={Screen.JOB_LIST} component={JobList} />
-    <Stack.Screen name={Screen.JOB_DETAILS} component={JobDetails} />
-    <Stack.Screen name={Screen.POST_NEW_JOB} component={PostNewJob} />
+    <Stack.Screen
+      name={Screen.JOB_LIST}
+      component={JobList}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name={Screen.JOB_DETAILS}
+      component={JobDetails}
+      // options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name={Screen.POST_NEW_JOB}
+      component={PostNewJob}
+      options={{ headerShown: false }}
+    />
   </Stack.Navigator>
 );
 
 const CandidateStack = () => (
   <Stack.Navigator>
-    <Stack.Screen name={Screen.CANDIDATE_LIST} component={CandidateList} />
+    <Stack.Screen
+      name={Screen.CANDIDATE_LIST}
+      component={CandidateList}
+      options={{ headerShown: false }}
+    />
     <Stack.Screen
       name={Screen.CANDIDATE_DETAILS}
       component={CandidateDetails}
@@ -57,29 +73,6 @@ const TabNavigator = () => {
   );
 };
 
-// const RootNavigator = (props: any) => {
-//   return (
-//     <NavigationContainer>
-//       <Tab.Navigator
-//         // default configuration from React Navigation
-//         appearance={{
-//           floating: false,
-//           activeColors: "#000000",
-//           activeTabBackgrounds: "#7986F9",
-//         }}
-//         tabBarOptions={{
-//           activeTintColor: "#2F7C6E",
-//           inactiveTintColor: "#222222",
-//         }}
-//       >
-//         <Tab.Screen name={Screen.JOB} component={JobStack} />
-//         <Tab.Screen name={Screen.CANDIDATE} component={CandidateStack} />
-//         <Tab.Screen name={Screen.POST_NEW_JOB} component={PostNewJob} />
-//       </Tab.Navigator>
-//     </NavigationContainer>
-//   );
-// };
-
 const RootStack = createStackNavigator();
 
 const RootNavigator = (props: any) => {
@@ -96,7 +89,7 @@ const RootNavigator = (props: any) => {
       }}
     >
       <RootStack.Navigator
-        initialRouteName={Screen.TAB_NAVIGATOR}
+        initialRouteName={Screen.AUTHENTICATION}
         screenOptions={{
           animationEnabled: true,
           headerShown: false,

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { useAuth, useUser, SignedIn, SignedOut } from "@clerk/clerk-expo";
@@ -21,6 +21,7 @@ const JobList: React.FC = () => {
   const [jobs, setJobList] = useRecoilState(jobListState);
   const userEmail = user?.emailAddresses[0].emailAddress;
   const notSignedIn = isSignedIn ? "Signed in" : "Signed out";
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     if (!isSignedIn) {
@@ -59,20 +60,24 @@ const JobList: React.FC = () => {
     console.log("logout from joblist");
   };
 
+  const onRefresh = async () => {
+    setRefreshing(true);
+    try {
+      const newData = await fetchJobs();
+      setJobList(newData);
+    } catch (error) {
+      console.error("Error refreshing data:", error);
+    } finally {
+      setRefreshing(false);
+    }
+  };
+
   return (
     <Container>
       <Header
         title={`Hi ${userEmail}, You are ${notSignedIn}`}
         onButtonPress={handleLogout}
       />
-
-      <SignedIn>
-        <Text>You are Signed in</Text>
-      </SignedIn>
-      <SignedOut>
-        <Text>You are Signed out</Text>
-      </SignedOut>
-
       <FlashList
         data={jobs}
         renderItem={({ item }: JobDetailsProps) => (
@@ -86,6 +91,8 @@ const JobList: React.FC = () => {
         estimatedItemSize={200}
         horizontal={false}
         listEmptyComponent={listEmptyComponent}
+        onRefresh={onRefresh}
+        refreshing={refreshing}
       />
     </Container>
   );

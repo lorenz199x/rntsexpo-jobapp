@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { StyleSheet } from "react-native";
+import { RefreshControl, StyleSheet } from "react-native";
 import Container from "@components/Containers/Container";
 import Text from "@components/Text/Text";
 // import { ThemeContext } from "@context/ThemeContext";
@@ -32,6 +32,8 @@ interface ListProps {
    */
   estimatedItemSize?: number;
   listEmptyComponent?: any;
+  onRefresh?: () => void;
+  refreshing?: boolean;
 }
 
 /**
@@ -48,6 +50,8 @@ const FlashList = ({
   horizontal = true,
   estimatedItemSize = 50,
   listEmptyComponent,
+  onRefresh,
+  refreshing,
 }: ListProps) => {
   // const { colorTheme } = useContext(ThemeContext);
 
@@ -67,6 +71,10 @@ const FlashList = ({
         horizontal={horizontal}
         showsHorizontalScrollIndicator={false}
         ListEmptyComponent={listEmptyComponent}
+        // onRefresh={onRefresh}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
       />
     </Container>
   );

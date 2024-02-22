@@ -1,5 +1,5 @@
 // screens/CandidateList.tsx
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { useAuth, useUser, SignedIn, SignedOut } from "@clerk/clerk-expo";
@@ -21,6 +21,7 @@ const CandidateList: React.FC = () => {
   const [candidates, setCandidates] = useRecoilState(candidateListState);
   const userEmail = user?.emailAddresses[0].emailAddress;
   const notSignedIn = isSignedIn ? "Signed in" : "Signed out";
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     if (!isSignedIn) {
@@ -72,6 +73,18 @@ const CandidateList: React.FC = () => {
     console.log("logout from candidatelist");
   };
 
+  const onRefresh = async () => {
+    setRefreshing(true);
+    try {
+      const newData = await fetchCandidates();
+      setCandidates(newData);
+    } catch (error) {
+      console.error("Error refreshing data:", error);
+    } finally {
+      setRefreshing(false);
+    }
+  };
+
   return (
     <Container>
       <Header
@@ -84,6 +97,8 @@ const CandidateList: React.FC = () => {
         estimatedItemSize={200}
         horizontal={false}
         listEmptyComponent={listEmptyComponent}
+        onRefresh={onRefresh}
+        refreshing={refreshing}
       />
     </Container>
   );

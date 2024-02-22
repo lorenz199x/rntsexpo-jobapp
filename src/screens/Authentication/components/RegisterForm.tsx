@@ -8,27 +8,33 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import Toast from "react-native-toast-message";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { ClerkProvider, SignedIn, SignedOut } from "@clerk/clerk-expo";
+import { useSignUp, useAuth } from "@clerk/clerk-expo";
+//utils.
 import images from "@assets/images";
-import ButtonIcon from "@components/Button/ButtonIcon";
-import ButtonText from "@components/Button/ButtonText";
-import Input from "@components/Input/Input";
 import { Labels } from "@shared/enums";
 import { ButtonTitle } from "@shared/enums/buttonText";
 import { Colors, Shadows } from "@themes/index";
 import { verticalScale } from "@utils/sizes";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { ClerkProvider, SignedIn, SignedOut } from "@clerk/clerk-expo";
-import { useSignUp, useAuth } from "@clerk/clerk-expo";
-import Toast from "react-native-toast-message";
-import { toastConfig, ToastMessage } from "@components/Toast/Toast";
 import Navigation from "@navigation/Navigation";
 import { Screen } from "@shared/enums/Screen";
+import { login } from "@services/api";
+//components
+import ButtonIcon from "@components/Button/ButtonIcon";
+import ButtonText from "@components/Button/ButtonText";
+import Input from "@components/Input/Input";
+import { toastConfig, ToastMessage } from "@components/Toast/Toast";
 
 interface RegisterFormInput {
   email: string;
   fullName: string;
   password: string;
   // confirmPassword: string;
+  skills?: string;
+  experience?: string;
+  resumeUrl?: string;
 }
 
 const RegisterForm: React.FC = () => {
@@ -40,6 +46,7 @@ const RegisterForm: React.FC = () => {
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<RegisterFormInput>({
     defaultValues: {
@@ -47,6 +54,9 @@ const RegisterForm: React.FC = () => {
       fullName: "",
       password: "",
       // confirmPassword: "",
+      skills: "",
+      experience: "",
+      resumeUrl: `https://example.com/user_resume.pdf`, //temporary data for now, expect that the user uploaded the resume
     },
   });
 
@@ -63,24 +73,27 @@ const RegisterForm: React.FC = () => {
       return;
     }
     try {
-      console.log("pasok");
+      console.log("PASOK");
 
       const test1 = await signUp.create({
         emailAddress: data.email,
-        firstName: data.fullName,
+        // firstName: data.fullName,
         password: data.password,
       });
-      console.log("pasok1", test1);
-
+      console.log("PASOK1", test1);
       // send the email.
       const test2 = await signUp.prepareEmailAddressVerification({
         strategy: "email_code",
       });
-      // console.log("test2", test2);
+
+      const result = await login({ ...data, name: data.fullName });
+      console.log("onsubmitRegister", result.message, result.success);
+      reset();
 
       // change the UI to our pending section.
       setPendingVerification(true);
     } catch (err: any) {
+      console.error("REGISTER", err);
       console.log("ERROR:", JSON.stringify(err, null, 2));
       const errorObject = JSON.parse(JSON.stringify(err, null, 2));
 
@@ -119,6 +132,7 @@ const RegisterForm: React.FC = () => {
     <View style={styles.root}>
       <View style={styles.firstRow}>
         <Text style={styles.registerText}>{Labels.REGISTER}</Text>
+        {/* additional buttons for different auth
         <View style={styles.socialLoginButtonContainer}>
           <ButtonIcon
             logoOnly
@@ -138,72 +152,114 @@ const RegisterForm: React.FC = () => {
             iconName="facebook"
             iconColor={Colors.facebookBlue}
           />
-        </View>
+        </View> */}
       </View>
-      <Fragment>
-        <Controller
-          control={control}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Input
-              testID="input"
-              placeholder="Full Name"
-              value={value}
-              onChange={onChange}
-              onBlur={onBlur}
-              style={styles.usernameInput}
-              showIcon={false}
-            />
-          )}
-          name="fullName"
-          rules={{ required: "Full Name is required" }}
-        />
-        {errors.fullName && (
-          <Text style={styles.error}>{errors.fullName.message}</Text>
-        )}
 
-        <Controller
-          control={control}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Input
-              testID="input"
-              placeholder="Email"
-              value={value}
-              onChange={onChange}
-              onBlur={onBlur}
-              style={styles.usernameInput}
-              showIcon={false}
-            />
+      {!pendingVerification && (
+        <Fragment>
+          <Controller
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                testID="input"
+                placeholder="Full Name"
+                value={value}
+                onChange={onChange}
+                onBlur={onBlur}
+                style={styles.usernameInput}
+                showIcon={false}
+              />
+            )}
+            name="fullName"
+            rules={{ required: "Full Name is required" }}
+          />
+          {errors.fullName && (
+            <Text style={styles.error}>{errors.fullName.message}</Text>
           )}
-          name="email"
-          rules={{ required: "Username is required" }}
-        />
-        {errors.email && (
-          <Text style={styles.error}>{errors.email.message}</Text>
-        )}
 
-        <Controller
-          control={control}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Input
-              testID="input"
-              placeholder="Password"
-              value={value}
-              onChange={onChange}
-              onBlur={onBlur}
-              style={styles.usernameInput}
-              showIcon={false}
-              showPasswordIcon={true}
-              secureTextEntry={true}
-            />
+          <Controller
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                testID="input"
+                placeholder="Email"
+                value={value}
+                onChange={onChange}
+                onBlur={onBlur}
+                style={styles.usernameInput}
+                showIcon={false}
+              />
+            )}
+            name="email"
+            rules={{ required: "Email is required" }}
+          />
+          {errors.email && (
+            <Text style={styles.error}>{errors.email.message}</Text>
           )}
-          name="password"
-          rules={{ required: "Password is required" }}
-        />
-        {errors.password && (
-          <Text style={styles.error}>{errors.password.message}</Text>
-        )}
 
-        {/* <Controller
+          <Controller
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                testID="input"
+                placeholder="Password"
+                value={value}
+                onChange={onChange}
+                onBlur={onBlur}
+                style={styles.usernameInput}
+                showIcon={false}
+                showPasswordIcon={true}
+                secureTextEntry={true}
+              />
+            )}
+            name="password"
+            rules={{ required: "Password is required" }}
+          />
+          {errors.password && (
+            <Text style={styles.error}>{errors.password.message}</Text>
+          )}
+
+          <Controller
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                testID="input"
+                placeholder="Skills"
+                value={value}
+                onChange={onChange}
+                onBlur={onBlur}
+                style={styles.usernameInput}
+                showIcon={false}
+              />
+            )}
+            name="skills"
+            // rules={{ required: "Skills is required" }}
+          />
+          {errors.skills && (
+            <Text style={styles.error}>{errors.skills.message}</Text>
+          )}
+
+          <Controller
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                testID="input"
+                placeholder="Experience"
+                value={value}
+                onChange={onChange}
+                onBlur={onBlur}
+                style={styles.usernameInput}
+                showIcon={false}
+              />
+            )}
+            name="experience"
+            // rules={{ required: "Experience is required" }}
+          />
+          {errors.experience && (
+            <Text style={styles.error}>{errors.experience.message}</Text>
+          )}
+
+          {/* <Controller
           control={control}
           render={({ field: { onChange, onBlur, value } }) => (
             <Input
@@ -224,34 +280,16 @@ const RegisterForm: React.FC = () => {
         {errors.confirmPassword && (
           <Text style={styles.error}>{errors.confirmPassword.message}</Text>
         )} */}
-      </Fragment>
-      <View style={styles.secondRow}>
-        <ButtonText
-          buttonText={ButtonTitle.SIGN_UP}
-          customButtonStyle={styles.signupButton}
-          customTextStyle={styles.signupText}
-          onPress={handleSubmit(onSubmit)}
-        />
-        <View style={styles.loginContainer}>
-          <View>
-            <Text style={styles.alreadyMemberText}>Already a member?</Text>
-            <ButtonText
-              customTextStyle={styles.loginText}
-              textOnly
-              buttonText={ButtonTitle.LOGIN}
-            />
-          </View>
-        </View>
-      </View>
+        </Fragment>
+      )}
 
       {pendingVerification && (
-        <View
-          style={{ flex: 0.5, justifyContent: "center", alignItems: "center" }}
-        >
+        <>
           <View>
             <TextInput
               value={code}
               placeholder="Code..."
+              style={styles.inputField}
               onChangeText={(code) => setCode(code)}
             />
           </View>
@@ -260,15 +298,39 @@ const RegisterForm: React.FC = () => {
               Verify Email
             </Text>
           </TouchableOpacity>
-        </View>
+        </>
       )}
 
+      <View style={styles.secondRow}>
+        <ButtonText
+          buttonText={
+            !pendingVerification ? ButtonTitle.SIGN_UP : ButtonTitle.VERIFY
+          }
+          customButtonStyle={styles.signupButton}
+          customTextStyle={styles.signupText}
+          onPress={
+            !pendingVerification ? handleSubmit(onSubmit) : onPressVerify
+          }
+        />
+        {/* <View style={styles.loginContainer}>
+          <View>
+            <Text style={styles.alreadyMemberText}>Already a member?</Text>
+            <ButtonText
+              customTextStyle={styles.loginText}
+              textOnly
+              buttonText={ButtonTitle.LOGIN}
+            />
+          </View>
+        </View> */}
+      </View>
+
+      {/* I used this as checker for session
       <SignedIn>
         <Text style={styles.error}>You are Signed in</Text>
       </SignedIn>
       <SignedOut>
         <Text style={styles.error}>You are Signed out</Text>
-      </SignedOut>
+      </SignedOut> */}
       <Toast config={toastConfig} position="bottom" bottomOffset={20} />
     </View>
   );
@@ -344,5 +406,14 @@ const styles = StyleSheet.create({
   error: {
     color: "red",
     marginBottom: 10,
+  },
+  inputField: {
+    marginVertical: 4,
+    height: 50,
+    borderWidth: 1,
+    borderColor: "#6c47ff",
+    borderRadius: 4,
+    padding: 10,
+    backgroundColor: "#fff",
   },
 });
