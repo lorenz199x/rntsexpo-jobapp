@@ -1,13 +1,9 @@
 import React from "react";
 import AppNavigator from "@navigation/AppNavigator";
-// import { ClerkProvider } from "@clerk/clerk-expo";
-// import Config from "react-native-config";
-import { ClerkProvider, SignedIn, SignedOut, useAuth } from "@clerk/clerk-expo";
+import { ClerkProvider } from "@clerk/clerk-expo";
 import * as SecureStore from "expo-secure-store";
-import { Button, View } from "react-native";
 
 const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
-// "pk_test_bWlnaHR5LWVlbC0yOS5jbGVyay5hY2NvdW50cy5kZXYk";
 
 const tokenCache = {
   async getToken(key: string) {
